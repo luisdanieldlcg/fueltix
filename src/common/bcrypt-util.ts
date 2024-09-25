@@ -1,12 +1,13 @@
 import { Logger } from '@nestjs/common';
-import bcrypt from 'bcrypt';
+// See https://stackoverflow.com/questions/58055145/how-to-fix-typeerror-cannot-read-property-hash-of-undefined-during-hashing-pa
+import * as bcrypt from 'bcrypt';
 
 const logger = new Logger('bcrypt-util');
 
 export async function hashPassword(text: string): Promise<string> {
   try {
-    const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(text, salt);
+    console.log('Hashing password: ', text);
+    return await bcrypt.hash(text, 11);
   } catch (error) {
     logger.error('Failed to hash password: ', error);
     return null;

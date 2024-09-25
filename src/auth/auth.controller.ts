@@ -17,15 +17,13 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async logIn(@Body() dto: LoginDto) {
-    this.authService.authenticateUser(dto.email, dto.password);
-    return 'login';
+    return this.authService.authenticateUser(dto.email, dto.password);
   }
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() dto: SignupDto) {
-    this.authService.createUser(dto);
-    return {};
+  async signup(@Body() dto: SignupDto) {
+    return this.authService.createUser(dto);
   }
 
   @Post('verify')
