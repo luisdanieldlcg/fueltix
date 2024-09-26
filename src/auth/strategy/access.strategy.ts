@@ -8,11 +8,12 @@ import { JwtPayload, UserPrincipal } from '../auth.interfaces';
 
 const cookieExtractor = (req: Request) => {
   const cookies = req.cookies;
-
+  console.log('Checking Cookies', cookies);
   if (!req || !cookies) {
     return undefined;
   }
   const accessToken = req.cookies[jwtCookieConstants.accessTokenName];
+  console.log('Access Token', accessToken);
   if (!accessToken) {
     return undefined;
   }
