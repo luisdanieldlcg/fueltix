@@ -8,7 +8,11 @@ export class FuelTickets {
   amount: number;
   @Column()
   sequential: number;
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 1024,
+    unique: true,
+  })
   barcode: string;
   @Column()
   deliveryMonth: number;

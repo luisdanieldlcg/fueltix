@@ -28,4 +28,8 @@ export class UserService {
   findByEmail(email: string): Promise<User> | null {
     return this.userRepository.findOne({ where: { email: email } });
   }
+
+  validateById(id: number): Promise<User> {
+    return this.userRepository.findOne({ where: { id: id } });
+  }
 }

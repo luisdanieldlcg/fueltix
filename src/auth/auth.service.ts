@@ -1,18 +1,18 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { SignupDto } from './dtos/register.dto';
-import { comparePasswordHash} from 'src/common/bcrypt-util';
+import { comparePasswordHash } from 'src/common/bcrypt-util';
+import { JwtPayload } from './auth.interfaces';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
-  constructor(private readonly userService: UserService) {
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {
     //
   }
 
@@ -29,7 +29,18 @@ export class AuthService {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
 
-    return user;
+    const payload: JwtPayload = {
+      userId: user.id,
+    };
+
+    const token = await this.jwtService.signAsync(payload, {
+      privateKey: 'my-example-private-key',
+    });
+
+    return {
+      ...user,
+      token,
+    };
   }
 
   async createUser(dto: SignupDto) {
@@ -39,6 +50,17 @@ export class AuthService {
       this.logger.error('User already exists');
       throw new HttpException('User already exists', HttpStatus.CONFLICT);
     }
-    return this.userService.create(dto);
+    const user = await this.userService.create(dto);
+
+    const payload: JwtPayload = {
+      userId: user.id,
+    };
+    const token = await this.jwtService.signAsync(payload, {
+      privateKey: 'my-example-private-key',
+    });
+    return {
+      ...user,
+      token,
+    };
   }
 }
