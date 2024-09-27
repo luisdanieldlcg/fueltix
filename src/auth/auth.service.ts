@@ -1,9 +1,17 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { SignupDto } from './dtos/register.dto';
 import { comparePasswordHash } from 'src/common/bcrypt-util';
 import { JwtPayload } from './auth.interfaces';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigType } from '@nestjs/config';
+import jwtConfig from 'src/config/jwt.config';
 
 @Injectable()
 export class AuthService {
@@ -12,9 +20,9 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-  ) {
-    //
-  }
+    @Inject(jwtConfig.KEY)
+    private readonly config: ConfigType<typeof jwtConfig>,
+  ) {}
 
   async authenticateUser(email: string, password: string) {
     this.logger.log('Attempting to login user with email {}', email);
@@ -34,7 +42,7 @@ export class AuthService {
     };
 
     const token = await this.jwtService.signAsync(payload, {
-      privateKey: 'my-example-private-key',
+      privateKey: this.config.JWT_PRIVATE_KEY,
     });
 
     return {
@@ -48,15 +56,16 @@ export class AuthService {
     const exists = await this.userService.exists(dto.email);
     if (exists) {
       this.logger.error('User already exists');
-      throw new HttpException('User already exists', HttpStatus.CONFLICT);
+      throw new HttpException('El usuario ya existe', HttpStatus.CONFLICT);
     }
+    console.log('creating user with dto: ', dto);
     const user = await this.userService.create(dto);
 
     const payload: JwtPayload = {
       userId: user.id,
     };
     const token = await this.jwtService.signAsync(payload, {
-      privateKey: 'my-example-private-key',
+      privateKey: this.config.JWT_PRIVATE_KEY,
     });
     return {
       ...user,

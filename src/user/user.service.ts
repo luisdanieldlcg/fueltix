@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from 'src/auth/dtos/register.dto';
 import { User } from './user.model';
@@ -17,8 +17,15 @@ export class UserService {
       email: dto.email,
       password: hash,
       createdAt: new Date(),
+      fullName: dto.fullname,
+      role: dto.role,
+      username: dto.username,
     });
     return this.userRepository.save(newUser);
+  }
+
+  getAllUsers() {
+    return this.userRepository.find();
   }
 
   exists(email: string): Promise<boolean> {

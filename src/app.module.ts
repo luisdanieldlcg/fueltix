@@ -1,33 +1,39 @@
 import { Module } from '@nestjs/common';
-import Config from './config';
 import { AuthModule } from './auth/auth.module';
+import ConfigModule from './config/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user/user.model';
 import { TicketsModule } from './tickets/tickets.module';
+import { TicketAssignmentsModule } from './ticket-assignments/ticket-assignments.module';
+import { ConfigType } from '@nestjs/config';
+import dbConfig from './config/db.config';
 
 @Module({
-  imports: [
-    Config,
-    AuthModule,
-    TypeOrmModule.forRoot({
-      type: 'mssql',
-      username: 'sa',
-      password: '@admin123',
-      host: 'localhost',
-      port: 1433,
-      synchronize: true,
-      database: 'fuel',
-      entities: [__dirname + '/**/*.model{.ts,.js}'],
-      options: { trustServerCertificate: true },
-      autoLoadEntities: true,
-      logging: true,
-    }),
-
-    UserModule,
-    TicketsModule,
-  ],
-  controllers: [],
-  providers: [],
+    imports: [
+        ConfigModule,
+        AuthModule,
+        TypeOrmModule.forRootAsync({
+            useFactory: async (config: ConfigType<typeof dbConfig>) => {
+                return {
+                    type: 'mssql',
+                    username: config.DB_USERNAME,
+                    password: config.DB_PASSWORD,
+                    host: config.DB_HOST,
+                    port: config.DB_PORT,
+                    database: config.DB_NAME,
+                    synchronize: true,
+                    entities: [__dirname + '/**/*.model{.ts,.js}'],
+                    options: { trustServerCertificate: true },
+                    autoLoadEntities: true,
+                };
+            },
+            inject: [dbConfig.KEY],
+        }),
+        UserModule,
+        TicketsModule,
+        TicketAssignmentsModule,
+    ],
+    controllers: [],
+    providers: [],
 })
-export class AppModule {}
+export class AppModule { }

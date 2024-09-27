@@ -21,7 +21,7 @@ export class FuelTickets {
   @Column()
   status: number;
   @Column()
-  employeeNumber: number;
+  employeeId: number;
   @Column()
   registerDate: Date;
 }

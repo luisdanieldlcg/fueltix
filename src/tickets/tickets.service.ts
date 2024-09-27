@@ -29,7 +29,7 @@ export class TicketsService {
       deliveryMonth,
       status: 0,
       // TODO: update this with the id of the client who SENT the ticket
-      employeeNumber: 0,
+      employeeId: 0,
     });
     return this.ticketRepository.save(ticket);
   }
