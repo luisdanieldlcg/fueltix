@@ -1,51 +1,57 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    ParseIntPipe,
-    Patch,
-    Post,
-    UseGuards,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dtos/create-ticket.dto';
 import { UpdateTicketDto } from './dtos/update-ticket-dto';
-import { AccessGuard } from 'src/auth/auth.guards';
+import { AccessGuard, RoleGuard } from 'src/auth/auth.guards';
+import { Roles } from 'src/common/decorators/role.decorator';
+import { Role } from 'src/common/enums';
 
 @Controller('tickets')
 export class TicketsController {
-    constructor(private readonly ticketsService: TicketsService) { }
+  constructor(private readonly ticketsService: TicketsService) {}
 
-    @Post()
-    @UseGuards(AccessGuard)
-    create(@Body() dto: CreateTicketDto) {
-        return this.ticketsService.createTicket(dto);
-    }
+  @Post()
+  @Roles(Role.ADMIN, Role.SUPERVISOR)
+  @UseGuards(AccessGuard, RoleGuard)
+  create(@Body() dto: CreateTicketDto) {
+    return this.ticketsService.createTicket(dto);
+  }
 
-    @Get()
-    @UseGuards(AccessGuard)
-    getAll() {
-        return this.ticketsService.getAllTickets();
-    }
+  @Get()
+  @Roles(Role.ADMIN, Role.SUPERVISOR)
+  @UseGuards(AccessGuard, RoleGuard)
+  getAll() {
+    return this.ticketsService.getAllTickets();
+  }
 
-    @Get(':id')
-    @UseGuards(AccessGuard)
-    getById(@Param('id', ParseIntPipe) id: number) {
-        return this.ticketsService.getTicketById(id);
-    }
+  @Get(':id')
+  @Roles(Role.ADMIN, Role.SUPERVISOR)
+  @UseGuards(AccessGuard, RoleGuard)
+  getById(@Param('id', ParseIntPipe) id: number) {
+    return this.ticketsService.getTicketById(id);
+  }
 
-    @Delete(':id')
-    @UseGuards(AccessGuard)
-    delete(@Param('id', ParseIntPipe) id: number) {
-        return this.ticketsService.deleteTicketById(id);
-    }
+  @Delete(':id')
+  @Roles(Role.ADMIN)
+  @UseGuards(AccessGuard, RoleGuard)
+  delete(@Param('id', ParseIntPipe) id: number) {
+    return this.ticketsService.deleteTicketById(id);
+  }
 
-    // update ticket
-    @Patch(':id')
-    @UseGuards(AccessGuard)
-    update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateTicketDto) {
-        return this.ticketsService.updateById(id, dto);
-    }
+  @Patch(':id')
+  @Roles(Role.ADMIN, Role.SUPERVISOR)
+  @UseGuards(AccessGuard, RoleGuard)
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateTicketDto) {
+    return this.ticketsService.updateById(id, dto);
+  }
 }

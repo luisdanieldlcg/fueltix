@@ -9,13 +9,11 @@ import jwtConfig from 'src/config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 
 const cookieExtractor = (req: Request) => {
-  console.log('Request', req);
   const cookies = req.cookies;
   if (!req || !cookies) {
     return undefined;
   }
-  const accessToken = req.cookies[jwtCookieConstants.accessTokenName]
-  console.log('Access Token', accessToken);
+  const accessToken = req.cookies[jwtCookieConstants.accessTokenName];
   if (!accessToken) {
     return undefined;
   }
@@ -47,10 +45,10 @@ export class AccessStrategy extends PassportStrategy(
   public async validate(payload: JwtPayload): Promise<UserPrincipal> {
     // This will validate that the user still exists
     const user = await this.userService.validateById(payload.userId);
-    console.log('User', user);
     return {
       userId: user.id,
       email: user.email,
+      role: user.role,
     };
   }
 }

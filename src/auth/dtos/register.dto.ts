@@ -1,6 +1,7 @@
 import { Match } from 'src/common/decorators/match.decorator';
 import { LoginDto } from './login.dto';
-import { IsIn, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
+import { Role } from 'src/common/enums';
 
 export class SignupDto extends LoginDto {
   @Match(LoginDto, (dto) => dto.password, {
@@ -10,8 +11,8 @@ export class SignupDto extends LoginDto {
   @IsNotEmpty({
     message: 'El campo role no puede estar vacío.',
   })
-  @IsIn([1, 2, 3])
-  role: number;
+  @IsEnum(Role)
+  role: Role;
   @IsNotEmpty({
     message: 'El campo nombre completo no puede estar vacío.',
   })
