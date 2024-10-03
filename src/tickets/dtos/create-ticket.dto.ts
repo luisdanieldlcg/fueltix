@@ -5,8 +5,10 @@ export class CreateTicketDto {
     message: 'El monto del ticket no es válido.',
   })
   amount: number;
+
   @IsNotEmpty({ message: 'El campo secuencial no puede estar vacío.' })
   sequential: number;
+
   @IsNotEmpty({
     message: 'El campo de fecha de vencimiento no puede estar vacío.',
   })

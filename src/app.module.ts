@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TicketsModule } from './tickets/tickets.module';
 import { TicketAssignmentsModule } from './ticket-assignments/ticket-assignments.module';
 import { ConfigType } from '@nestjs/config';
+import { DeliveryModule } from './delivery/delivery.module';
 import dbConfig from './config/db.config';
 
 @Module({
@@ -32,6 +33,7 @@ import dbConfig from './config/db.config';
         UserModule,
         TicketsModule,
         TicketAssignmentsModule,
+        DeliveryModule,
     ],
     controllers: [],
     providers: [],

@@ -8,55 +8,167 @@ import { UpdateTicketDto } from './dtos/update-ticket-dto';
 
 @Injectable()
 export class TicketsService {
-  constructor(
-    @InjectRepository(FuelTickets)
-    private ticketRepository: Repository<FuelTickets>,
-  ) {}
+    constructor(
+        @InjectRepository(FuelTickets)
+        private ticketRepository: Repository<FuelTickets>,
+    ) {}
 
-  async createTicket(dto: CreateTicketDto) {
-    const barcode = bwipjs.toSVG({
-      bcid: 'code128',
-      text: Math.random().toString(36).substring(7),
-    });
-    const registerDate = new Date();
-    // delivery month is the current month
-    const deliveryMonth = registerDate.getMonth();
+    async createTicket(dtos: CreateTicketDto[]) {
+        const tickets = dtos.map((dto) => {
+            const barcode = bwipjs.toSVG({
+                bcid: 'code128',
+                text: Math.random().toString(36).substring(7),
+            });
+            const registerDate = new Date();
+            // delivery month is the current month
+            const deliveryMonth = registerDate.getMonth();
 
-    const ticket = this.ticketRepository.create({
-      ...dto,
-      barcode,
-      registerDate,
-      deliveryMonth,
-      status: 0,
-      // TODO: update this with the id of the client who SENT the ticket
-      employeeId: 0,
-    });
-    return this.ticketRepository.save(ticket);
-  }
-  createManyTickets() {}
+            return this.ticketRepository.create({
+                ...dto,
+                barcode,
+                registerDate,
+                deliveryMonth,
+                employeeId: 0,
+                status: 1,
+            });
+        });
 
-  getAllTickets() {
-    return this.ticketRepository.find();
-  }
+        try {
+            return this.ticketRepository.save(tickets);
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error al guardar los tickets');
+        }
+    }
 
-  getTicketById(id: number) {
-    return this.ticketRepository.findOneBy({
-      fuelTicketId: id,
-    });
-  }
+    getActiveTickets() {
+        return this.ticketRepository.find({
+            where: {
+                status: 1,
+            },
+        });
+    }
 
-  deleteTicketById(id: number) {
-    this.ticketRepository.delete(id);
-    return this.ticketRepository.findOneBy({
-      fuelTicketId: id,
-    });
-  }
+    getAllTickets() {
+        return this.ticketRepository.find();
+    }
 
-  async updateById(id: number, dto: UpdateTicketDto) {
-    await this.ticketRepository.update(id, dto);
-    // return the updated ticket
-    return this.ticketRepository.findOneBy({
-      fuelTicketId: id,
-    });
-  }
+    async getTicketsSummary() {
+        const allActiveTickets = await this.getActiveTickets();
+
+        const amount200 = allActiveTickets.filter(
+            (ticket) => ticket.amount === 200,
+        ).length;
+
+        const amount500 = allActiveTickets.filter(
+            (ticket) => ticket.amount === 500,
+        ).length;
+
+        const amount1000 = allActiveTickets.filter(
+            (ticket) => ticket.amount === 1000,
+        ).length;
+
+        const amount2000 = allActiveTickets.filter(
+            (ticket) => ticket.amount === 2000,
+        ).length;
+
+        return {
+            amount200,
+            amount500,
+            amount1000,
+            amount2000,
+        };
+    }
+
+    getTicketById(id: number) {
+        return this.ticketRepository.findOneBy({
+            fuelTicketId: id,
+        });
+    }
+
+    deleteTicketById(id: number) {
+        this.ticketRepository.delete(id);
+        return this.ticketRepository.findOneBy({
+            fuelTicketId: id,
+        });
+    }
+
+    async updateById(id: number, dto: UpdateTicketDto) {
+        await this.ticketRepository.update(id, dto);
+        // return the updated ticket
+        return this.ticketRepository.findOneBy({
+            fuelTicketId: id,
+        });
+    }
+
+    async deactivateTickets(
+        amount200: number,
+        amount500: number,
+        amount1000: number,
+        amount2000: number,
+    ) {
+        const allActiveTickets = await this.getActiveTickets();
+
+        const tickets200 = allActiveTickets.filter(
+            (ticket) => ticket.amount === 200,
+        );
+        const tickets500 = allActiveTickets.filter(
+            (ticket) => ticket.amount === 500,
+        );
+
+        const tickets1000 = allActiveTickets.filter(
+            (ticket) => ticket.amount === 1000,
+        );
+
+        const tickets2000 = allActiveTickets.filter(
+            (ticket) => ticket.amount === 2000,
+        );
+
+        if (amount200 > tickets200.length) {
+            throw new Error('No hay suficientes tickets de 200');
+        }
+
+        if (amount500 > tickets500.length) {
+            throw new Error('No hay suficientes tickets de 500');
+        }
+
+        if (amount1000 > tickets1000.length) {
+            throw new Error('No hay suficientes tickets de 1000');
+        }
+
+        if (amount2000 > tickets2000.length) {
+            throw new Error('No hay suficientes tickets de 2000');
+        }
+
+        if (amount200 > 0) {
+            tickets200.slice(0, amount200).forEach((ticket) => {
+                ticket.status = 0;
+            });
+        }
+
+        if (amount500 > 0) {
+            tickets500.slice(0, amount500).forEach((ticket) => {
+                ticket.status = 0;
+            });
+        }
+
+        if (amount1000 > 0) {
+            tickets1000.slice(0, amount1000).forEach((ticket) => {
+                ticket.status = 0;
+            });
+        }
+
+        if (amount2000 > 0) {
+            tickets2000.slice(0, amount2000).forEach((ticket) => {
+                ticket.status = 0;
+            });
+        }
+
+        await this.ticketRepository.save([
+            ...tickets200,
+            ...tickets500,
+            ...tickets1000,
+            ...tickets2000,
+        ]);
+    }
 }

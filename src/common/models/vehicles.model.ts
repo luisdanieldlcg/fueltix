@@ -1,17 +1,13 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Cars {
+export class Vehicles {
     @PrimaryGeneratedColumn()
     id: number;
     @Column()
-    ficha: string;
-    @Column()
-    model: number;
+    model: string;
     @Column()
     year: number;
     @Column()
-    plate: string;
-    @Column()
-    chassis: string;
+    plateNumber: string;
 }

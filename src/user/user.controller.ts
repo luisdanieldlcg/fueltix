@@ -6,12 +6,12 @@ import { Role } from 'src/common/enums';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService) {}
 
-  @Get()
-  @Roles(Role.ADMIN)
-  @UseGuards(AccessGuard, RoleGuard)
-  getAllUsers() {
-    return this.userService.getAllUsers();
-  }
+    @Get()
+    @Roles(Role.ADMIN)
+    @UseGuards(AccessGuard, RoleGuard)
+    getAllUsers() {
+        return this.userService.getAllUsers();
+    }
 }
