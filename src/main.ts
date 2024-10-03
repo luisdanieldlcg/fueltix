@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
     const logger = new Logger('Startup');
@@ -16,6 +17,16 @@ async function bootstrap() {
     const config = app.get(ConfigService);
     const port = config.get<number>('PORT');
     logger.log(`Server is running on http://localhost:${port}`);
+
+    const swaggerConfig = new DocumentBuilder()
+        .setTitle('Fuel')
+        .setDescription('Fuel API')
+        .setVersion('1.0')
+        .addTag('fuel')
+        .build();
+
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api', app, document);
 
     await app.listen(port);
 }

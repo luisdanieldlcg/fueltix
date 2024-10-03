@@ -9,4 +9,9 @@ export class DeliveryController {
     create() {
         return this.deliveryService.createDelivery();
     }
+
+    @Post(':id')
+    cancelDelivery() {
+        return this.deliveryService.createDelivery();
+    }
 }

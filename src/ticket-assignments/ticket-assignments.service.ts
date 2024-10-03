@@ -114,4 +114,8 @@ export class TicketAssignmentsService {
         }
         return true;
     }
+
+    getAssignments() {
+        return this.assignmentsRepository.find();
+    }
 }
