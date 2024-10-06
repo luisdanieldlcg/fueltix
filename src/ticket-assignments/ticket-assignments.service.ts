@@ -43,11 +43,10 @@ export class TicketAssignmentsService {
 
         // asigna los tickets
         const assignment = this.assignmentsRepository.create({
-            amount:
-                dto.amount200 * 200 +
-                dto.amount500 * 500 +
-                dto.amount1000 * 1000 +
-                dto.amount2000 * 2000,
+            amount200: dto.amount200,
+            amount500: dto.amount500,
+            amount1000: dto.amount1000,
+            amount2000: dto.amount2000,
             status: 1,
             employeeId: dto.employeeId,
             fullName: employeeUser.fullName,
@@ -85,37 +84,104 @@ export class TicketAssignmentsService {
             (fuel) => fuel.amount === 2000,
         );
 
-        if (checkAmount200 > tickets200.length) {
+        let missing200 = checkAmount200 - tickets200.length;
+        let missing500 = checkAmount500 - tickets500.length;
+        let missing1000 = checkAmount1000 - tickets1000.length;
+        let missing2000 = checkAmount2000 - tickets2000.length;
+
+        let missingTickets = [];
+        if (missing200 > 0) {
+            missingTickets.push({
+                amount: 200,
+                missing: missing200,
+            });
+        }
+
+        if (missing500 > 0) {
+            missingTickets.push({
+                amount: 500,
+                missing: missing500,
+            });
+        }
+
+        if (missing1000 > 0) {
+            missingTickets.push({
+                amount: 1000,
+                missing: missing1000,
+            });
+        }
+
+        if (missing2000 > 0) {
+            missingTickets.push({
+                amount: 2000,
+                missing: missing2000,
+            });
+        }
+
+        if (missingTickets.length > 0) {
             throw new HttpException(
-                'No hay suficientes tickets de 200',
+                `Faltan ${missingTickets
+                    .map(
+                        (ticket) =>
+                            `${ticket.missing} tickets de ${ticket.amount}`,
+                    )
+                    .join(', ')}`,
                 HttpStatus.BAD_REQUEST,
             );
         }
 
-        if (checkAmount500 > tickets500.length) {
-            throw new HttpException(
-                'No hay suficientes tickets de 500',
-                HttpStatus.BAD_REQUEST,
-            );
-        }
-
-        if (checkAmount1000 > tickets1000.length) {
-            throw new HttpException(
-                'No hay suficientes tickets de 1000',
-                HttpStatus.BAD_REQUEST,
-            );
-        }
-
-        if (checkAmount2000 > tickets2000.length) {
-            throw new HttpException(
-                'No hay suficientes tickets de 2000',
-                HttpStatus.BAD_REQUEST,
-            );
-        }
         return true;
     }
 
-    getAssignments() {
-        return this.assignmentsRepository.find();
+    getActiveAssignments() {
+        return this.assignmentsRepository.find({
+            where: { status: 1 },
+        });
+    }
+
+    async cancelAssignment(id: number) {
+        const assignment = await this.assignmentsRepository.findOne({
+            where: { assignmentId: id },
+        });
+
+        if (assignment == null) {
+            throw new HttpException(
+                'No se encontró la asignación',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
+        assignment.status = 0;
+        let rolledback = false;
+        try {
+            await this.assignmentsRepository.save(assignment);
+            await this.ticketsService.activateTickets(
+                assignment.amount200,
+                assignment.amount500,
+                assignment.amount1000,
+                assignment.amount2000,
+            );
+            rolledback = true;
+        } catch (error) {
+            console.log(error);
+            rolledback = false;
+        }
+
+        if (!rolledback) {
+            throw new HttpException(
+                'Error al cancelar la asignación',
+                HttpStatus.CONFLICT,
+            );
+        } else {
+            return {
+                message: 'Asignación cancelada satisfactoriamente',
+                recoveredTickets: {
+                    amount200: assignment.amount200,
+                    amount500: assignment.amount500,
+                    amount1000: assignment.amount1000,
+                    amount2000: assignment.amount2000,
+                },
+            };
+        }
     }
 }

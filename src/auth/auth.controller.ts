@@ -12,7 +12,9 @@ import { LoginDto } from './dtos/login.dto';
 import { SignupDto } from './dtos/register.dto';
 import { CookieService } from 'src/common/services/cookie.service';
 import { Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor(

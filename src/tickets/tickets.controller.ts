@@ -16,7 +16,9 @@ import { UpdateTicketDto } from './dtos/update-ticket-dto';
 import { AccessGuard, RoleGuard } from 'src/auth/auth.guards';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Tickets')
 @Controller('tickets')
 export class TicketsController {
     constructor(private readonly ticketsService: TicketsService) {}

@@ -9,7 +9,13 @@ export class TicketAssignments {
     @Column()
     fullName: string;
     @Column()
-    amount: number;
+    amount200: number;
+    @Column()
+    amount500: number;
+    @Column()
+    amount1000: number;
+    @Column()
+    amount2000: number;
     @Column()
     status: number;
 }

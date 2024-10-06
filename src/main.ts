@@ -19,14 +19,13 @@ async function bootstrap() {
     logger.log(`Server is running on http://localhost:${port}`);
 
     const swaggerConfig = new DocumentBuilder()
-        .setTitle('Fuel')
-        .setDescription('Fuel API')
+        .setTitle('Fuelix')
+        .setDescription('Fueltix API')
         .setVersion('1.0')
-        .addTag('fuel')
         .build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig);
-    SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup('docs', app, document);
 
     await app.listen(port);
 }

@@ -15,17 +15,20 @@ export class TicketsService {
 
     async createTicket(dtos: CreateTicketDto[]) {
         const tickets = dtos.map((dto) => {
-            const barcode = bwipjs.toSVG({
+            // generate code128 barcode
+            const number = Math.floor(Math.random() * 1000000000);
+            const barcode_svg = bwipjs.toSVG({
                 bcid: 'code128',
-                text: Math.random().toString(36).substring(7),
+                text: number.toString(),
+                scale: 3,
             });
             const registerDate = new Date();
             // delivery month is the current month
             const deliveryMonth = registerDate.getMonth();
-
             return this.ticketRepository.create({
                 ...dto,
-                barcode,
+                barcode_svg,
+                barcode: number,
                 registerDate,
                 deliveryMonth,
                 employeeId: 0,
@@ -45,6 +48,14 @@ export class TicketsService {
         return this.ticketRepository.find({
             where: {
                 status: 1,
+            },
+        });
+    }
+
+    getInactiveTickets() {
+        return this.ticketRepository.find({
+            where: {
+                status: 0,
             },
         });
     }
@@ -99,6 +110,57 @@ export class TicketsService {
         return this.ticketRepository.findOneBy({
             fuelTicketId: id,
         });
+    }
+
+    async activateTickets(
+        amount200: number,
+        amount500: number,
+        amount1000: number,
+        amount2000: number,
+    ) {
+        const allInactiveTickets = await this.getInactiveTickets();
+
+        // activate the number of tickets requested
+        // if there are not enough tickets, activate all of them
+
+        const tickets200 = allInactiveTickets
+            .filter((ticket) => ticket.amount === 200)
+            .slice(0, amount200)
+            .map((ticket) => {
+                ticket.status = 1;
+                return ticket;
+            });
+
+        const tickets500 = allInactiveTickets
+            .filter((ticket) => ticket.amount === 500)
+            .slice(0, amount500)
+            .map((ticket) => {
+                ticket.status = 1;
+                return ticket;
+            });
+
+        const tickets1000 = allInactiveTickets
+            .filter((ticket) => ticket.amount === 1000)
+            .slice(0, amount1000)
+            .map((ticket) => {
+                ticket.status = 1;
+                return ticket;
+            });
+
+        const tickets2000 = allInactiveTickets
+            .filter((ticket) => ticket.amount === 2000)
+            .slice(0, amount2000)
+            .map((ticket) => {
+                ticket.status = 1;
+                return ticket;
+            });
+
+        await this.ticketRepository.save([
+            ...tickets200,
+            ...tickets500,
+            ...tickets1000,
+            ...tickets2000,
+        ]);
     }
 
     async deactivateTickets(

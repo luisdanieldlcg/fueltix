@@ -4,11 +4,15 @@ import {
     Get,
     HttpException,
     HttpStatus,
+    Param,
+    ParseIntPipe,
     Post,
 } from '@nestjs/common';
 import { TicketAssignmentsService } from './ticket-assignments.service';
 import { CreateTicketAssignmentDto } from './dto/create-assignment.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Ticket Assignments')
 @Controller('ticket-assignments')
 export class TicketAssignmentsController {
     constructor(
@@ -37,6 +41,12 @@ export class TicketAssignmentsController {
 
     @Get()
     getAssignments() {
-        return this.ticketAssignmentsService.getAssignments();
+        return this.ticketAssignmentsService.getActiveAssignments();
+    }
+
+    // cancel assignment
+    @Post(':id/cancel')
+    cancelAssignment(@Param('id', ParseIntPipe) id: number) {
+        return this.ticketAssignmentsService.cancelAssignment(id);
     }
 }
