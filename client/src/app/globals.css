@@ -12,4 +12,12 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .primary-input {
+    @apply px-3 py-3 ring-2 ring-gray-300 rounded-full;
+  }
+
+  .primary-button {
+    @apply bg-primary text-white rounded-full py-3 w-64;
+  }
 }
