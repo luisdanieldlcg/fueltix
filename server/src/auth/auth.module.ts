@@ -10,21 +10,21 @@ import { AccessStrategy } from './strategy/access.strategy';
 import { ConfigType } from '@nestjs/config';
 import jwtConfig from 'src/config/jwt.config';
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User]),
-    JwtModule.registerAsync({
-      useFactory: (config: ConfigType<typeof jwtConfig>) => {
-        return {
-          privateKey: config.JWT_PRIVATE_KEY,
-          signOptions: {
-            expiresIn: 60 * config.JWT_LIFETIME,
-          },
-        };
-      },
-      inject: [jwtConfig.KEY],
-    }),
-  ],
-  providers: [AuthService, AccessStrategy, UserService, CookieService],
-  controllers: [AuthController],
+    imports: [
+        TypeOrmModule.forFeature([User]),
+        JwtModule.registerAsync({
+            useFactory: (config: ConfigType<typeof jwtConfig>) => {
+                return {
+                    privateKey: config.JWT_PRIVATE_KEY,
+                    signOptions: {
+                        expiresIn: 60 * config.JWT_LIFETIME,
+                    },
+                };
+            },
+            inject: [jwtConfig.KEY],
+        }),
+    ],
+    providers: [AuthService, AccessStrategy, UserService, CookieService],
+    controllers: [AuthController],
 })
 export class AuthModule {}
