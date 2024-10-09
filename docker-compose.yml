@@ -1,10 +1,22 @@
 services:
+    api:
+        build: .
+        ports:
+            - 8080:8080
+        volumes:
+            - ./src:/usr/src/app/src
+        container_name: api
     mssql:
+        user: root
         image: mcr.microsoft.com/azure-sql-edge:latest
         ports:
             - 1433:1433
         environment:
             ACCEPT_EULA: 'Y'
-            MSSQL_SA_PASSWORD: 'Password123'
+            MSSQL_SA_PASSWORD: '@admin123'
             MSSQL_PID: 'Developer'
             MSSQL_USER: 'sa'
+        volumes:
+            - ./db/data.bak:/var/opt/mssql/backup/fuel-data.bak
+        container_name: mssql
+        command: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '@admin123' -Q 'RESTORE DATABASE [FuelData] FROM DISK = "/var/opt/mssql/backup/fuel-data.bak" WITH MOVE 'FuelData' TO '/var/opt/mssql/data/FuelData.mdf', MOVE 'FuelData_log' TO '/var/opt/mssql/data/FuelData_log.ldf'"
