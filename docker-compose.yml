@@ -6,6 +6,9 @@ services:
         volumes:
             - ./src:/usr/src/app/src
         container_name: api
+        depends_on:
+            mssql:
+                condition: service_healthy
     mssql:
         user: root
         image: mcr.microsoft.com/azure-sql-edge:latest
@@ -19,4 +22,22 @@ services:
         volumes:
             - ./db/data.bak:/var/opt/mssql/backup/fuel-data.bak
         container_name: mssql
-        command: /bin/bash -c "sleep 10 && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '@admin123' -Q 'RESTORE DATABASE [fuel] FROM DISK = N'/var/opt/mssql/backup/fuel-data.bak' WITH FILE = 1, NOUNLOAD, STATS = 5'"
+        healthcheck:
+            test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "@admin123", "-Q", "SELECT 1"]
+            interval: 10s
+            retries: 5
+            start_period: 30s
+        command: /opt/mssql/bin/sqlservr
+
+        
+    restore:
+        image: mcr.microsoft.com/azure-sql-edge:latest
+        depends_on:
+            mssql:
+                condition: service_healthy
+        environment:
+            ACCEPT_EULA: 'Y'
+            MSSQL_SA_PASSWORD: '@admin123'
+        volumes:
+            - ./db/data.bak:/var/opt/mssql/backup/fuel-data.bak
+        entrypoint: [ "/opt/mssql-tools/bin/sqlcmd", "-S", "mssql", "-U", "sa", "-P", "@admin123", "-Q", "RESTORE DATABASE [fuel] FROM DISK = N'/var/opt/mssql/backup/fuel-data.bak' WITH FILE = 1, NOUNLOAD, STATS = 5" ]

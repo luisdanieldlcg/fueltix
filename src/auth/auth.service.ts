@@ -30,7 +30,7 @@ export class AuthService {
         const user = await this.userService.findByEmail(email);
         if (!user) {
             throw new HttpException(
-                'User does not exist',
+                'El usuario no existe o la contraseña es incorrecta',
                 HttpStatus.NOT_FOUND,
             );
         }
@@ -38,7 +38,7 @@ export class AuthService {
 
         if (!valid) {
             throw new HttpException(
-                'Invalid password',
+                'El usuario no existe o la contraseña es incorrecta',
                 HttpStatus.UNAUTHORIZED,
             );
         }
