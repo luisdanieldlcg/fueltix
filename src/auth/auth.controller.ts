@@ -6,6 +6,7 @@ import {
     HttpStatus,
     Post,
     Res,
+    UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
@@ -13,6 +14,9 @@ import { SignupDto } from './dtos/register.dto';
 import { CookieService } from 'src/common/services/cookie.service';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
+import { AccessGuard } from './auth.guards';
+import { UserPrincipal } from './auth.interfaces';
+import { GetUserPrincipal } from './auth.decorators';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -49,8 +53,8 @@ export class AuthController {
 
     @Get('verify')
     @HttpCode(HttpStatus.OK)
-    async verify(@Res({ passthrough: true }) res: Response) {
-        this.authService.verifyUser(res);
+    @UseGuards(AccessGuard)
+    async verify(@GetUserPrincipal() f: UserPrincipal) {
         return {};
     }
 
@@ -60,5 +64,4 @@ export class AuthController {
         this.cookieService.clearAccessCookie(res);
         return { message: 'Ha cerrado sesión exitosamente.' };
     }
-    
 }

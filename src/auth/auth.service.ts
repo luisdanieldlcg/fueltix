@@ -61,15 +61,6 @@ export class AuthService {
         return this.logIn(user);
     }
 
-    /**
-     * Logs in the given user by emitting new access token.
-     * @param user User
-     */
-
-    async verifyUser(res: Response){
-        
-    }
-
     private async logIn(user: User) {
         const payload: JwtPayload = {
             userId: user.id,
