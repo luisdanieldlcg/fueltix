@@ -7,6 +7,7 @@ import { TicketsModule } from './tickets/tickets.module';
 import { TicketAssignmentsModule } from './ticket-assignments/ticket-assignments.module';
 import { ConfigType } from '@nestjs/config';
 import { DeliveryModule } from './delivery/delivery.module';
+import { CompanyModule } from './company/company.module';
 import dbConfig from './config/db.config';
 
 @Module({
@@ -34,6 +35,7 @@ import dbConfig from './config/db.config';
         TicketsModule,
         TicketAssignmentsModule,
         DeliveryModule,
+        CompanyModule,
     ],
     controllers: [],
     providers: [],

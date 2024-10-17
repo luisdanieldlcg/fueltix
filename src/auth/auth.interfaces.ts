@@ -12,4 +12,5 @@ export interface UserPrincipal {
     readonly userId: number;
     readonly email: string;
     readonly role: Role;
+    readonly username: string;
 }

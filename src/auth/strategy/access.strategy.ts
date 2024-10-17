@@ -48,6 +48,7 @@ export class AccessStrategy extends PassportStrategy(
             userId: user.id,
             email: user.email,
             role: user.role,
+            username: user.username,
         };
     }
 }
