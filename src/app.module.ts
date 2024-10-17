@@ -17,7 +17,7 @@ import dbConfig from './config/db.config';
         TypeOrmModule.forRootAsync({
             useFactory: async (config: ConfigType<typeof dbConfig>) => {
                 return {
-                    type: 'mssql',
+                    type: 'postgres',
                     username: config.DB_USERNAME,
                     password: config.DB_PASSWORD,
                     host: config.DB_HOST,

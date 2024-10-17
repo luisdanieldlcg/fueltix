@@ -19,6 +19,9 @@ export class User {
     fullName: string;
     @Column()
     password: string;
-    @Column()
+    @Column({
+        type: 'date',
+        default: () => 'CURRENT_DATE',
+    })
     createdAt: Date;
 }

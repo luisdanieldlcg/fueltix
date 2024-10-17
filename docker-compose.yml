@@ -6,38 +6,15 @@ services:
         volumes:
             - ./src:/usr/src/app/src
         container_name: api
-        depends_on:
-            mssql:
-                condition: service_healthy
-    mssql:
-        user: root
-        image: mcr.microsoft.com/azure-sql-edge:latest
-        ports:
-            - 1433:1433
-        environment:
-            ACCEPT_EULA: 'Y'
-            MSSQL_SA_PASSWORD: '@admin123'
-            MSSQL_PID: 'Developer'
-            MSSQL_USER: 'sa'
-        volumes:
-            - ./db/data.bak:/var/opt/mssql/backup/fuel-data.bak
-        container_name: mssql
-        healthcheck:
-            test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "@admin123", "-Q", "SELECT 1"]
-            interval: 10s
-            retries: 5
-            start_period: 30s
-        command: /opt/mssql/bin/sqlservr
 
-        
-    restore:
-        image: mcr.microsoft.com/azure-sql-edge:latest
-        depends_on:
-            mssql:
-                condition: service_healthy
+    pg:
+        image: postgres:17
+        ports:
+            - 5432:5432
+        container_name: fueltix-database
         environment:
-            ACCEPT_EULA: 'Y'
-            MSSQL_SA_PASSWORD: '@admin123'
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: dba_password
+            POSTGRES_DB: fueltix
         volumes:
-            - ./db/data.bak:/var/opt/mssql/backup/fuel-data.bak
-        entrypoint: [ "/opt/mssql-tools/bin/sqlcmd", "-S", "mssql", "-U", "sa", "-P", "@admin123", "-Q", "RESTORE DATABASE [fuel] FROM DISK = N'/var/opt/mssql/backup/fuel-data.bak' WITH FILE = 1, NOUNLOAD, STATS = 5" ]
+            - ./scripts:/docker-entrypoint-initdb.d
