@@ -30,7 +30,6 @@ export class AccessStrategy extends PassportStrategy(
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-            //   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             _ignoreExpiration: false,
             get ignoreExpiration() {
                 return this._ignoreExpiration;

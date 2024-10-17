@@ -12,5 +12,6 @@ import { User } from 'src/user/user.model';
     providers: [TicketAssignmentsService, TicketsService, UserService],
     controllers: [TicketAssignmentsController],
     imports: [TypeOrmModule.forFeature([FuelTickets, TicketAssignments, User])],
+    exports: [TicketAssignmentsService],
 })
 export class TicketAssignmentsModule {}
