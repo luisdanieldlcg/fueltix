@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import jwtConfig from 'src/config/jwt.config';
 import { User } from 'src/user/user.model';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -64,6 +65,10 @@ export class AuthService {
      * Logs in the given user by emitting new access token.
      * @param user User
      */
+
+    async verifyUser(res: Response){
+        
+    }
 
     private async logIn(user: User) {
         const payload: JwtPayload = {
