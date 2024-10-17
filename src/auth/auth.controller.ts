@@ -49,7 +49,8 @@ export class AuthController {
 
     @Get('verify')
     @HttpCode(HttpStatus.OK)
-    async verify() {
+    async verify(@Res({ passthrough: true }) res: Response) {
+        this.authService.verifyUser(res);
         return {};
     }
 
