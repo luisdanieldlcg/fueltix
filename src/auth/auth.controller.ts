@@ -55,7 +55,9 @@ export class AuthController {
 
     @Get('logout')
     @HttpCode(HttpStatus.OK)
-    async logout() {
-        return {};
+    async logout(@Res({ passthrough: true }) res: Response) {
+        this.cookieService.clearAccessCookie(res);
+        return { message: 'Ha cerrado sesión exitosamente.' };
     }
+    
 }

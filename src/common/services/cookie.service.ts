@@ -23,6 +23,15 @@ export class CookieService {
     });
   }
 
+  public clearAccessCookie(res: Response) {
+    res.clearCookie(jwtCookieConstants.accessTokenName, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+  }
+
+
   public setRefreshCookie(response: Response, token: string) {
     // const hours = this.config.REFRESH_TOKEN_LIFETIME;
     // const maxAgeInMS = hours * 60 * 60 * 1000;
