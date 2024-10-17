@@ -55,7 +55,7 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @UseGuards(AccessGuard)
     async verify(@GetUserPrincipal() f: UserPrincipal) {
-        return {};
+        return f;
     }
 
     @Get('logout')
