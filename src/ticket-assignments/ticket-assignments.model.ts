@@ -18,14 +18,16 @@ export class TicketAssignments {
     amount2000: number;
     @Column()
     status: number;
-    @Column()
+    @Column({
+        nullable: true,
+    })
     travelDate?: Date;
-    @Column()
-    reason?: string;
-    @Column()
-    department?: number;
-    @Column()
+    @Column({ default: 'N/A' })
+    reason: string;
+    @Column({ nullable: true })
+    departmentId: number;
+    @Column({ nullable: true })
     vehicleId?: number;
-    @Column()
+    @Column({ default: 'N/A' })
     province?: string;
 }

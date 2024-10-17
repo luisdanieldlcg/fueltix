@@ -3,10 +3,10 @@ import { DeliveryController } from './delivery.controller';
 import { DeliveryService } from './delivery.service';
 
 import { UserModule } from 'src/user/user.module';
-import { TicketAssignmentsService } from 'src/ticket-assignments/ticket-assignments.service';
+import { TicketAssignmentsModule } from 'src/ticket-assignments/ticket-assignments.module';
 
 @Module({
-    imports: [TicketAssignmentsService, UserModule],
+    imports: [TicketAssignmentsModule, UserModule],
     controllers: [DeliveryController],
     providers: [DeliveryService],
 })
