@@ -1,4 +1,4 @@
-import { Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
 import { CreateDeliveryDto } from './dto/delivery.dtos';
 
@@ -7,7 +7,7 @@ export class DeliveryController {
     constructor(private readonly deliveryService: DeliveryService) {}
 
     @Post()
-    create(dto: CreateDeliveryDto) {
+    create(@Body() dto: CreateDeliveryDto) {
         return this.deliveryService.createDelivery(dto);
     }
 

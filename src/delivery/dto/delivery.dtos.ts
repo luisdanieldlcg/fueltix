@@ -2,16 +2,15 @@ import { IsNotEmpty } from 'class-validator';
 
 export class CreateDeliveryDto {
     @IsNotEmpty()
-    driverId: number;
+    employeeId: number;
     @IsNotEmpty()
-    department: number;
+    departmentId: number;
     @IsNotEmpty()
     reason: string;
     @IsNotEmpty()
     amount200: number;
     @IsNotEmpty()
     amount500: number;
-    @IsNotEmpty()
     @IsNotEmpty()
     amount1000: number;
     @IsNotEmpty()

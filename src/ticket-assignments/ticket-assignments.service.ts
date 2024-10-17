@@ -56,6 +56,11 @@ export class TicketAssignmentsService {
             status: 1,
             employeeId: dto.employeeId,
             fullName: employeeUser.fullName,
+            departmentId: dto.departmentId,
+            reason: dto.reason,
+            province: dto.province,
+            travelDate: dto.travelDate,
+            vehicleId: dto.vehicleId,
         });
 
         await this.assignmentsRepository.save(assignment);

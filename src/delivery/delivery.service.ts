@@ -17,11 +17,18 @@ export class DeliveryService {
             amount500: dto.amount500,
             amount1000: dto.amount1000,
             amount2000: dto.amount2000,
-            employeeId: dto.driverId,
+            employeeId: dto.employeeId,
+            // registration date
             month: today.getMonth(),
             year: today.getFullYear(),
+            // actual delivery data
+            departmentId: dto.departmentId,
+            reason: dto.reason,
+            province: dto.province,
+            travelDate: dto.travelDate,
+            vehicleId: dto.vehicleId,
         });
-        return dto;
+        return assignment;
     }
 
     cancelDelivery(id: number) {
