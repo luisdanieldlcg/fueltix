@@ -16,6 +16,12 @@ export class TicketAssignmentsService {
         private readonly userService: UserService,
     ) {}
 
+    async findAssignmentsByEmployeeId(employeeId: number) {
+        return this.assignmentsRepository.find({
+            where: { employeeId: employeeId },
+        });
+    }
+
     async assignTicket(dto: CreateTicketAssignmentDto) {
         const availableTickets = await this.ticketsService.getActiveTickets();
         if (availableTickets.length === 0) {

@@ -18,4 +18,14 @@ export class TicketAssignments {
     amount2000: number;
     @Column()
     status: number;
+    @Column()
+    travelDate?: Date;
+    @Column()
+    reason?: string;
+    @Column()
+    department?: number;
+    @Column()
+    vehicleId?: number;
+    @Column()
+    province?: string;
 }
