@@ -17,7 +17,7 @@ export class UserController {
         return this.userService.getAllUsers();
     }
 
-    @Get()
+    @Get('/drivers')
     @Roles(Role.ADMIN)
     @UseGuards(AccessGuard, RoleGuard)
     getDrivers() {
