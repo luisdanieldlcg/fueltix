@@ -16,4 +16,11 @@ export class UserController {
     getAllUsers() {
         return this.userService.getAllUsers();
     }
+
+    @Get()
+    @Roles(Role.ADMIN)
+    @UseGuards(AccessGuard, RoleGuard)
+    getDrivers() {
+        return this.userService.getDrivers();
+    }
 }

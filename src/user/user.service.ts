@@ -4,6 +4,7 @@ import { SignupDto } from 'src/auth/dtos/register.dto';
 import { User } from './user.model';
 import { Repository } from 'typeorm';
 import { hashPassword } from 'src/common/bcrypt-util';
+import { Role } from 'src/common/enums';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,14 @@ export class UserService {
 
     getAllUsers() {
         return this.userRepository.find();
+    }
+
+    getDrivers() {
+        return this.userRepository.find({
+            where: {
+                role: Role.BASIC,
+            },
+        });
     }
 
     exists(email: string): Promise<boolean> {
