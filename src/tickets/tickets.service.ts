@@ -15,11 +15,9 @@ export class TicketsService {
 
     async createTicket(dtos: CreateTicketDto[]) {
         const tickets = dtos.map((dto) => {
-            // generate code128 barcode
-            const number = Math.floor(Math.random() * 1000000000);
             const barcode_svg = bwipjs.toSVG({
                 bcid: 'code128',
-                text: number.toString(),
+                text: dto.barcode.toString(),
                 scale: 3,
             });
             const registerDate = new Date();
@@ -28,7 +26,7 @@ export class TicketsService {
             return this.ticketRepository.create({
                 ...dto,
                 barcode_svg,
-                barcode: number,
+                barcode: dto.barcode,
                 registerDate,
                 deliveryMonth,
                 employeeId: 0,

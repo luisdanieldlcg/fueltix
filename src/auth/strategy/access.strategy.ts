@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -8,15 +8,20 @@ import { JwtPayload, UserPrincipal } from '../auth.interfaces';
 import jwtConfig from 'src/config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 
+const logger = new Logger('AuthGuard');
+
 const cookieExtractor = (req: Request) => {
     const cookies = req.cookies;
     if (!req || !cookies) {
+        logger.warn('No cookies found in the request');
         return undefined;
     }
     const accessToken = req.cookies[jwtCookieConstants.accessTokenName];
     if (!accessToken) {
+        logger.warn('Request has cookies but no access token');
         return undefined;
     }
+
     return accessToken;
 };
 @Injectable()
@@ -25,18 +30,15 @@ export class AccessStrategy extends PassportStrategy(
     jwtCookieConstants.accessTokenName,
 ) {
     constructor(
-        private readonly userService: UserService,
         @Inject(jwtConfig.KEY) config: ConfigType<typeof jwtConfig>,
+        private readonly userService: UserService,
     ) {
         super({
-            jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+            jwtFromRequest: ExtractJwt.fromExtractors([
+                ExtractJwt.fromAuthHeaderAsBearerToken(),
+                cookieExtractor,
+            ]),
             _ignoreExpiration: false,
-            get ignoreExpiration() {
-                return this._ignoreExpiration;
-            },
-            set ignoreExpiration(value) {
-                this._ignoreExpiration = value;
-            },
             secretOrKey: config.JWT_PRIVATE_KEY,
         });
     }

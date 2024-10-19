@@ -8,15 +8,15 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
     const logger = new Logger('Startup');
 
-    const app = await NestFactory.create(AppModule, { });
+    const app = await NestFactory.create(AppModule, {});
+    app.use(cookieParser());
+
     app.enableCors({
-        origin: ["http://localhost:3000"],
-        credentials: true
+        origin: ['http://localhost:3000'],
+        credentials: true,
     });
     app.setGlobalPrefix('api/v1');
     app.useGlobalPipes(new ValidationPipe()); // Dto validation
-
-    app.use(cookieParser());
 
     const config = app.get(ConfigService);
     const port = config.get<number>('PORT');

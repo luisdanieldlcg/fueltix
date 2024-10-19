@@ -14,12 +14,14 @@ export class FuelTickets {
         unique: true,
     })
     barcode_svg: string;
-
     @Column({ unique: true })
     barcode: number;
     @Column()
     deliveryMonth: number;
-    @Column()
+    @Column({
+        type: 'date',
+        default: new Date(),
+    })
     expirationDate: Date;
     @Column({
         type: 'bit',
