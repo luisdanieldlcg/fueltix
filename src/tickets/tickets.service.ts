@@ -31,6 +31,7 @@ export class TicketsService {
                 deliveryMonth,
                 employeeId: 0,
                 status: 1,
+                amount: Number(dto.amount),
             });
         });
 

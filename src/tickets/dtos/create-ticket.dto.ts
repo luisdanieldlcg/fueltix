@@ -1,10 +1,10 @@
 import { IsIn, IsNotEmpty } from 'class-validator';
 
 export class CreateTicketDto {
-    @IsIn([200, 500, 1000, 2000], {
+    @IsIn(['200', '500', '1000', '2000'], {
         message: 'El monto del ticket no es válido.',
     })
-    amount: number;
+    amount: string;
 
     @IsNotEmpty({
         message: 'El campo de código de barras no puede estar vacío.',

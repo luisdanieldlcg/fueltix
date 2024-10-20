@@ -5,7 +5,7 @@ export class TicketAssignments {
     @PrimaryGeneratedColumn()
     assignmentId: number;
     @Column()
-    employeeId: number;
+    employee: string;
     @Column()
     fullName: string;
     @Column()
@@ -25,9 +25,9 @@ export class TicketAssignments {
     @Column({ default: 'N/A' })
     reason: string;
     @Column({ nullable: true })
-    departmentId: number;
+    department: string;
     @Column({ nullable: true })
-    vehicleId?: number;
+    vehicle?: string;
     @Column({ default: 'N/A' })
     province?: string;
 }

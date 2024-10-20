@@ -16,11 +16,11 @@ export class CreateTicketAssignmentDto {
     @IsNotEmpty()
     amount2000: number;
     @IsNotEmpty()
-    employeeId: number;
+    employee: string;
     // delivery
     province?: string;
     travelDate?: Date;
-    vehicleId?: number;
-    departmentId?: number;
+    vehicle?: string;
+    department?: string;
     reason?: string;
 }

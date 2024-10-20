@@ -17,16 +17,16 @@ export class DeliveryService {
             amount500: dto.amount500,
             amount1000: dto.amount1000,
             amount2000: dto.amount2000,
-            employeeId: dto.employeeId,
+            employee: dto.employee,
             // registration date
             month: today.getMonth(),
             year: today.getFullYear(),
             // actual delivery data
-            departmentId: dto.departmentId,
+            department: dto.department,
             reason: dto.reason,
             province: dto.province,
             travelDate: dto.travelDate,
-            vehicleId: dto.vehicleId,
+            vehicle: dto.vehicle,
         });
         return assignment;
     }

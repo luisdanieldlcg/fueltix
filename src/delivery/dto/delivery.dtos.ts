@@ -2,9 +2,9 @@ import { IsNotEmpty } from 'class-validator';
 
 export class CreateDeliveryDto {
     @IsNotEmpty()
-    employeeId: number;
+    employee: string;
     @IsNotEmpty()
-    departmentId: number;
+    department: string;
     @IsNotEmpty()
     reason: string;
     @IsNotEmpty()
@@ -20,5 +20,5 @@ export class CreateDeliveryDto {
     @IsNotEmpty()
     travelDate: Date;
     @IsNotEmpty()
-    vehicleId: number;
+    vehicle: string;
 }

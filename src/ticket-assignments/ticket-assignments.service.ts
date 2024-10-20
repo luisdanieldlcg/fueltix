@@ -16,11 +16,11 @@ export class TicketAssignmentsService {
         private readonly userService: UserService,
     ) {}
 
-    async findAssignmentsByEmployeeId(employeeId: number) {
-        return this.assignmentsRepository.find({
-            where: { employeeId: employeeId },
-        });
-    }
+    // async findAssignmentsByEmployeeId(employeeId: number) {
+    //     return this.assignmentsRepository.find({
+    //         where: { employee: employeeId },
+    //     });
+    // }
 
     async assignTicket(dto: CreateTicketAssignmentDto) {
         const availableTickets = await this.ticketsService.getActiveTickets();
@@ -38,14 +38,14 @@ export class TicketAssignmentsService {
             dto.amount2000,
         );
 
-        const employeeUser = await this.userService.findById(dto.employeeId);
+        // const employeeUser = await this.userService.findById(dto.employee);
 
-        if (!employeeUser) {
-            throw new HttpException(
-                'No se encontró al empleado',
-                HttpStatus.BAD_REQUEST,
-            );
-        }
+        // if (!employeeUser) {
+        //     throw new HttpException(
+        //         'No se encontró al empleado',
+        //         HttpStatus.BAD_REQUEST,
+        //     );
+        // }
 
         // asigna los tickets
         const assignment = this.assignmentsRepository.create({
@@ -54,13 +54,14 @@ export class TicketAssignmentsService {
             amount1000: dto.amount1000,
             amount2000: dto.amount2000,
             status: 1,
-            employeeId: dto.employeeId,
-            fullName: employeeUser.fullName,
-            departmentId: dto.departmentId,
+            employee: dto.employee,
+            fullName: dto.employee,
+            department: dto.department,
             reason: dto.reason,
             province: dto.province,
             travelDate: dto.travelDate,
-            vehicleId: dto.vehicleId,
+            vehicle: dto.vehicle,
+
         });
 
         await this.assignmentsRepository.save(assignment);
